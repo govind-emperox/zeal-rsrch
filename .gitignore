@@ -1,11 +1,26 @@
-./supporting-docs
+# Supporting material and local tooling
+supporting-docs/
+.context/
+.DS_Store
+
+# Node / pnpm
 .next/
 node_modules/
+.pnpm-store/
 out/
 dist/
+.turbo/
+
+# Environment files
 .env*
 !.env.example
+
+# Logs and TypeScript build state
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.tsbuildinfo
+
+# Local Supabase state
+supabase/.branches/

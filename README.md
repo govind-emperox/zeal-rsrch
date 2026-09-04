@@ -54,9 +54,29 @@ Next.js server action/API route
 
 The app itself should not call the OpenAI API directly. Codex acts as the local research executor, while the dashboard acts as the control plane and project archive.
 
-## Repository Status
+## Repository Layout
 
-This repository is currently in the product-specification stage. It contains the product requirements and design wireframes for the first release. Application code has not been added yet.
+This repository is organized as a pnpm monorepo:
+
+```text
+apps/
+  dashboard/        Next.js Release 1 dashboard
+packages/           Future shared types and UI packages
+services/
+  worker/           Future long-running Codex research worker
+supabase/           Future local database configuration and migrations
+prd/                Product requirements and design wireframes
+```
+
+The existing dashboard is an interface prototype. The worker, database migrations, and storage adapters follow the integration spike described in the PRD.
+
+## Development
+
+Install dependencies with `pnpm install`, then start the dashboard with:
+
+```sh
+pnpm dev:dashboard
+```
 
 ## Repository Contents
 

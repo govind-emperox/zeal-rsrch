@@ -1,25 +1,14 @@
 {
-  "name": "zeal-rsrch",
-  "version": "0.1.0",
   "private": true,
+  "name": "zeal-rsrch",
+  "packageManager": "pnpm@11.1.3",
+  "engines": {
+    "node": ">=20.9"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    "lucide-react": "1.41.0",
-    "next": "16.3.4",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
-  },
-  "devDependencies": {
-    "@types/node": "^26.0.0",
-    "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.7",
-    "eslint": "9.39.5",
-    "eslint-config-next": "16.3.4",
-    "typescript": "6.0.2"
+    "dev:dashboard": "pnpm --filter @zeal-rsrch/dashboard dev",
+    "build:dashboard": "pnpm --filter @zeal-rsrch/dashboard build",
+    "lint": "pnpm --filter @zeal-rsrch/dashboard lint",
+    "typecheck": "pnpm -r typecheck"
   }
 }

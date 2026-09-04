@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "services/*"
+
+# Next.js does not load this package during builds, and ESLint can use its WASM fallback.
+allowBuilds:
+  unrs-resolver: false
+minimumReleaseAgeExclude:
+  - lucide-react@1.41.0
