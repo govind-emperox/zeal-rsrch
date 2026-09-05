@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Journalist"
+  short_description: "Source-grounded web research reports"
+  default_prompt: "Use $research-journalist to research this topic and write a cited report."
