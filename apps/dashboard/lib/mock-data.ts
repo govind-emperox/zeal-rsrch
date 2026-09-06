@@ -77,10 +77,10 @@ export const telemetry = [
 ];
 
 export const environmentHealth = [
-  { label: "Postgres", value: "Connected", status: "complete" },
-  { label: "Object storage", value: "MinIO online", status: "complete" },
-  { label: "Codex worker", value: "2 active runs", status: "running" },
-  { label: "Firecrawl", value: "Available to Codex", status: "complete" },
+  { label: "Postgres", value: "Configured locally", status: "complete" },
+  { label: "Artifact storage", value: "Local filesystem", status: "complete" },
+  { label: "Codex worker", value: "Not implemented", status: "blocked" },
+  { label: "Firecrawl", value: "Optional / not configured", status: "queued" },
 ];
 
 export const tasks = [

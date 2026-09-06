@@ -7,9 +7,13 @@ supporting-docs/
 .next/
 node_modules/
 .pnpm-store/
+package-lock.json
 out/
 dist/
 .turbo/
+coverage/
+playwright-report/
+test-results/
 
 # Environment files
 .env*

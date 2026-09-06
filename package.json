@@ -15,6 +15,8 @@
     "dev:dashboard": "pnpm --filter @zeal-rsrch/dashboard dev",
     "build:dashboard": "pnpm --filter @zeal-rsrch/dashboard build",
     "lint": "pnpm --filter @zeal-rsrch/dashboard lint",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --if-present test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test"
   }
 }
