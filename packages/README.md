@@ -1,5 +1,9 @@
 # Shared Packages
 
-Place reusable workspace packages here as they become necessary. Likely Release 1 candidates are shared domain types, database contracts, and UI primitives used by multiple RSRCH applications.
+Current Release 1 packages:
+
+- `contracts`: Zod schemas and stable shared types.
+- `domain`: Task lifecycle, retry, retention, artifact-key, and prompt rules.
+- `db`: Drizzle schema, SQL migrations, PostgreSQL repositories, and integration tests.
 
 Do not extract dashboard-only code prematurely.

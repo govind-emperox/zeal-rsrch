@@ -36,6 +36,7 @@ export const SourceSchema = z.object({
   publishedAt: IsoDateTimeSchema.nullable(),
   retrievedAt: IsoDateTimeSchema,
   accessStatus: z.enum(["available", "metadata_only", "blocked", "unavailable"]),
+  citationLabel: z.string().max(100).nullable(),
 });
 
 export const RetentionClassSchema = z.enum([

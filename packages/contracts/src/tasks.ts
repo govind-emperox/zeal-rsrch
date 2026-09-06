@@ -64,6 +64,8 @@ export const TaskSchema = z.object({
   blockedReason: z.string().max(2_000).nullable(),
   codexThreadId: z.string().max(255).nullable(),
   skillName: z.string().min(1).max(64),
+  promptVersionId: EntityIdSchema.nullable(),
+  skillVersionId: EntityIdSchema.nullable(),
   version: z.number().int().nonnegative(),
   createdAt: IsoDateTimeSchema,
   updatedAt: IsoDateTimeSchema,

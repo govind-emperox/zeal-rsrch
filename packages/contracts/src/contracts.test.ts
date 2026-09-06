@@ -82,6 +82,7 @@ describe("contract boundaries", () => {
       publishedAt: null,
       retrievedAt: "2026-09-05T12:00:00-05:00",
       accessStatus: "available",
+      citationLabel: null,
     };
 
     expect(SourceSchema.safeParse({ ...source, url: "https://example.com/source" }).success).toBe(true);

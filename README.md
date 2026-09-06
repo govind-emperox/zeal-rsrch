@@ -42,11 +42,12 @@ The planned application has four main areas:
 
 ## Planned Architecture
 
-The first implementation target is a local Next.js app backed by Postgres and local-network or cloud file storage.
+The Release 1 implementation is a local Next.js app backed by PostgreSQL and local filesystem artifact storage.
 
 ```text
 Next.js server action/API route
-  -> @openai/codex-sdk or Codex app-server
+  -> PostgreSQL / pg-boss queue
+  -> worker invokes Codex app-server over stdio/JSONL
   -> starts a Codex thread with "$research-journalist ..."
   -> streams events back into Postgres
   -> dashboard renders task status and outputs
@@ -61,22 +62,29 @@ This repository is organized as a pnpm monorepo:
 ```text
 apps/
   dashboard/        Next.js Release 1 dashboard
-packages/           Future shared types and UI packages
+packages/
+  contracts/        Zod schemas and stable shared types
+  domain/           Lifecycle, retry, retention, key, and prompt rules
+  db/               Drizzle schema, SQL migrations, and repositories
 services/
   worker/           Future long-running Codex research worker
-supabase/           Future local database configuration and migrations
 prd/                Product requirements and design wireframes
 ```
 
-The existing dashboard is an interface prototype. The worker, database migrations, and storage adapters follow the integration spike described in the PRD.
+The existing dashboard is an interface prototype. PostgreSQL persistence is implemented; the Codex worker and storage adapter follow in the next slices described by the PRD.
 
 ## Development
 
-Install dependencies with `pnpm install`, then start the dashboard with:
+Install dependencies, start PostgreSQL, and apply migrations before starting the dashboard:
 
 ```sh
+pnpm install
+pnpm infra:up
+pnpm db:migrate
 pnpm dev:dashboard
 ```
+
+Run the complete validation suite with `pnpm check`. See [`packages/db/README.md`](packages/db/README.md) for migration and empty-database verification commands.
 
 ## Repository Contents
 

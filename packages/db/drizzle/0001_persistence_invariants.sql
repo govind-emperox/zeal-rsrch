@@ -1,0 +1,8 @@
+ALTER TABLE "approval_requests" ADD CONSTRAINT "approval_requests_decision_check" CHECK ("approval_requests"."decision" is null or "approval_requests"."decision" in ('accept', 'accept_for_session', 'decline', 'cancel'));--> statement-breakpoint
+ALTER TABLE "files" ADD CONSTRAINT "files_storage_key_check" CHECK ("files"."storage_key" !~ '(^/|(^|/)\.\.(/|$)|\\)' and "files"."storage_key" <> '');--> statement-breakpoint
+ALTER TABLE "projects" ADD CONSTRAINT "projects_archive_consistency_check" CHECK (("projects"."status" = 'archived') = ("projects"."archived_at" is not null));--> statement-breakpoint
+ALTER TABLE "run_events" ADD CONSTRAINT "run_events_type_check" CHECK ("run_events"."type" in ('task_created', 'task_queued', 'codex_thread_started', 'planning_started', 'search_started', 'source_found', 'source_read', 'draft_started', 'verification_started', 'approval_requested', 'approval_resolved', 'cleanup_started', 'cleanup_completed', 'report_saved', 'task_completed', 'task_failed', 'task_blocked', 'task_cancelled'));--> statement-breakpoint
+ALTER TABLE "run_events" ADD CONSTRAINT "run_events_metadata_size_check" CHECK (octet_length("run_events"."metadata"::text) <= 16384);--> statement-breakpoint
+ALTER TABLE "sources" ADD CONSTRAINT "sources_url_scheme_check" CHECK ("sources"."url" is null or "sources"."url" ~* '^https?://');--> statement-breakpoint
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_archive_consistency_check" CHECK (("tasks"."status" = 'archived') = ("tasks"."archived_at" is not null));--> statement-breakpoint
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_blocked_reason_check" CHECK ("tasks"."status" <> 'blocked' or nullif(btrim("tasks"."blocked_reason"), '') is not null);
