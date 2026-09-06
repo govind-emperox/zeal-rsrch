@@ -5,6 +5,7 @@ supporting-docs/
 
 # Node / pnpm
 .next/
+next-env.d.ts
 node_modules/
 .pnpm-store/
 package-lock.json
