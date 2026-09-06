@@ -2,11 +2,18 @@ import Link from "next/link";
 import { Activity, CircleAlert, FileCheck2, FolderPlus, Search } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { StatusPill } from "@/components/status-pill";
-import { channels, environmentHealth, projects, telemetry } from "@/lib/mock-data";
+import { channels, environmentHealth, telemetry } from "@/lib/mock-data";
+import { listDashboardProjects } from "@/lib/server/projects";
 
-export default function DashboardPage() {
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const projects = await listDashboardProjects();
+  const primaryProjectId = projects[0]?.id;
+  const activeProjectCount = projects.filter((project) => project.status === "active").length;
+
   return (
-    <AppShell active="dashboard">
+    <AppShell active="dashboard" projects={projects} primaryProjectId={primaryProjectId}>
       <div className="page-header">
         <div>
           <p className="eyebrow">Cur8r research workspace</p>
@@ -23,14 +30,14 @@ export default function DashboardPage() {
 
       <section className="summary-grid" aria-label="Workspace summary">
         <article className="metric-card">
+          <span>Active projects</span>
+          <strong>{activeProjectCount}</strong>
+          <small>Repository-backed research projects</small>
+        </article>
+        <article className="metric-card">
           <span>Channels</span>
           <strong>3</strong>
           <small>1 publishing, 2 in production</small>
-        </article>
-        <article className="metric-card">
-          <span>Active episodes</span>
-          <strong>1</strong>
-          <small>Sci-Fi Books Weekly · Episode 03</small>
         </article>
         <article className="metric-card">
           <span>Research candidates</span>
@@ -48,8 +55,8 @@ export default function DashboardPage() {
         <section className="panel project-panel" aria-labelledby="active-projects">
           <div className="panel-toolbar">
             <div>
-              <h2 id="active-projects">Active research project</h2>
-              <p>Open the September episode to review its brief, workflow, and source files.</p>
+              <h2 id="active-projects">Active research projects</h2>
+              <p>Open a project to review its brief, workflow, and source files.</p>
             </div>
             <label className="inline-search">
               <Search size={15} aria-hidden="true" />
@@ -65,31 +72,36 @@ export default function DashboardPage() {
                   <th>Project</th>
                   <th>Status</th>
                   <th>Updated</th>
-                  <th>Tasks</th>
-                  <th>Latest report</th>
                   <th aria-label="Open" />
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => (
-                  <tr key={project.id}>
-                    <td>
-                      <strong>{project.title}</strong>
-                      <small>{project.description}</small>
-                    </td>
-                    <td>
-                      <StatusPill status={project.status} />
-                    </td>
-                    <td>{project.updated}</td>
-                    <td>{project.tasks}</td>
-                    <td>{project.report}</td>
-                    <td>
-                      <Link className="row-action" href={`/projects/${project.id}/chat`}>
-                        Open
-                      </Link>
+                {projects.length === 0 ? (
+                  <tr>
+                    <td colSpan={4}>
+                      <strong>No projects yet</strong>
+                      <small>Create a project to start organizing research.</small>
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  projects.map((project) => (
+                    <tr key={project.id}>
+                      <td>
+                        <strong>{project.title}</strong>
+                        <small>{project.description}</small>
+                      </td>
+                      <td>
+                        <StatusPill status={project.status} />
+                      </td>
+                      <td>{project.updated}</td>
+                      <td>
+                        <Link className="row-action" href={`/projects/${project.id}/chat`}>
+                          Open
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

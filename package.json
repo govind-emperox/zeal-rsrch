@@ -14,6 +14,7 @@
     "db:backup": "./scripts/backup-postgres.sh",
     "db:generate": "pnpm --filter @zeal-rsrch/db db:generate",
     "db:migrate": "pnpm --filter @zeal-rsrch/db db:migrate",
+    "db:seed:cur8r": "pnpm --filter @zeal-rsrch/db db:seed:cur8r",
     "db:verify-migrations": "pnpm --filter @zeal-rsrch/db db:verify-migrations",
     "dev:dashboard": "pnpm --filter @zeal-rsrch/dashboard dev",
     "build:dashboard": "pnpm --filter @zeal-rsrch/dashboard build",

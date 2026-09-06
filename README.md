@@ -71,7 +71,7 @@ services/
 prd/                Product requirements and design wireframes
 ```
 
-The existing dashboard is an interface prototype. PostgreSQL persistence is implemented; the Codex worker and storage adapter follow in the next slices described by the PRD.
+The dashboard project list is backed by PostgreSQL; task, activity, and artifact views still use reference data until their Release 1 endpoints are implemented. The Codex worker and storage adapter follow in the next slices described by the PRD.
 
 ## Development
 
@@ -81,6 +81,7 @@ Install dependencies, start PostgreSQL, and apply migrations before starting the
 pnpm install
 pnpm infra:up
 pnpm db:migrate
+pnpm db:seed:cur8r
 pnpm dev:dashboard
 ```
 

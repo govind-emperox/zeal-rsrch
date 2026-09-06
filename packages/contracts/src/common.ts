@@ -55,5 +55,22 @@ export const PaginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
 });
 
+export const ApiErrorResponseSchema = z.object({
+  error: z.object({
+    code: z.string().min(1).max(100),
+    message: z.string().min(1).max(1_000),
+    issues: z
+      .array(
+        z.object({
+          path: z.string().max(500),
+          message: z.string().max(1_000),
+        }),
+      )
+      .max(100)
+      .optional(),
+  }),
+});
+
 export type BoundedMetadata = z.infer<typeof BoundedMetadataSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
+export type ApiErrorResponse = z.infer<typeof ApiErrorResponseSchema>;

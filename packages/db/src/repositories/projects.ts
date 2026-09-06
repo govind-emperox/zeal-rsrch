@@ -21,6 +21,15 @@ export class ProjectRepository {
     return row ? mapProject(row) : null;
   }
 
+  async findActiveByTitle(title: string): Promise<Project | null> {
+    const [row] = await this.db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.status, "active"), sql`lower(${projects.title}) = lower(${title.trim()})`))
+      .limit(1);
+    return row ? mapProject(row) : null;
+  }
+
   async list(options: { includeArchived?: boolean; limit?: number } = {}): Promise<Project[]> {
     const limit = Math.min(Math.max(options.limit ?? 50, 1), 100);
     const query = this.db.select().from(projects);

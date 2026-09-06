@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  ApiErrorResponseSchema,
+  ArchiveProjectInputSchema,
   BoundedMetadataSchema,
   CreateProjectInputSchema,
   CreateTaskInputSchema,
+  ListProjectsQuerySchema,
   RetentionCleanupPayloadSchema,
   RunEventSchema,
   SourceSchema,
@@ -16,6 +19,27 @@ describe("contract boundaries", () => {
     expect(CreateProjectInputSchema.parse({ title: "  Source review  " })).toEqual({
       title: "Source review",
     });
+  });
+
+  it("validates project list and archive request values", () => {
+    expect(ListProjectsQuerySchema.parse({ includeArchived: "true", limit: "25" })).toEqual({
+      includeArchived: true,
+      limit: 25,
+    });
+    expect(ArchiveProjectInputSchema.parse({ version: "3" })).toEqual({ version: 3 });
+    expect(ListProjectsQuerySchema.safeParse({ unexpected: "value" }).success).toBe(false);
+  });
+
+  it("bounds API error responses", () => {
+    expect(
+      ApiErrorResponseSchema.safeParse({
+        error: {
+          code: "validation_error",
+          message: "Request validation failed",
+          issues: [{ path: "title", message: "Required" }],
+        },
+      }).success,
+    ).toBe(true);
   });
 
   it("applies safe task defaults", () => {

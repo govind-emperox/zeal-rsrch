@@ -10,6 +10,12 @@ importers:
 
   apps/dashboard:
     dependencies:
+      '@zeal-rsrch/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@zeal-rsrch/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       lucide-react:
         specifier: 1.41.0
         version: 1.41.0(react@19.2.8)
@@ -22,6 +28,9 @@ importers:
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      zod:
+        specifier: 4.5.4
+        version: 4.5.4
     devDependencies:
       '@types/node':
         specifier: ^26.0.0
@@ -41,6 +50,9 @@ importers:
       typescript:
         specifier: 6.0.2
         version: 6.0.2
+      vitest:
+        specifier: 5.0.0
+        version: 5.0.0(@types/node@26.4.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(tsx@4.23.13))
 
   packages/contracts:
     dependencies:

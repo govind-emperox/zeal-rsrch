@@ -66,6 +66,9 @@ describe("PostgreSQL persistence", () => {
     });
     projectIds.push(project.id);
 
+    expect(await repositories.projects.findActiveByTitle(uniqueName.toUpperCase())).toEqual(project);
+    expect(await repositories.projects.findActiveByTitle(`  ${uniqueName}  `)).toEqual(project);
+
     await expect(repositories.projects.create({ title: uniqueName.toLowerCase() })).rejects.toMatchObject({
       cause: { code: "23505" },
     });

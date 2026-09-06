@@ -38,9 +38,16 @@ const navItems = [
 type AppShellProps = {
   active: "dashboard" | "chat" | "kanban" | "files";
   children: React.ReactNode;
+  projects?: Array<{ id: string; title: string; status: string }>;
+  primaryProjectId?: string;
 };
 
-export function AppShell({ active, children }: AppShellProps) {
+export function AppShell({
+  active,
+  children,
+  projects: projectItems = projects,
+  primaryProjectId = primaryProject.id,
+}: AppShellProps) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -75,9 +82,9 @@ export function AppShell({ active, children }: AppShellProps) {
             Projects
           </div>
           <div className="project-list">
-            {projects.slice(0, 4).map((project) => (
+            {projectItems.slice(0, 4).map((project) => (
               <Link
-                className={project.id === primaryProject.id ? "project-link active" : "project-link"}
+                className={project.id === primaryProjectId ? "project-link active" : "project-link"}
                 href={`/projects/${project.id}/chat`}
                 key={project.id}
               >

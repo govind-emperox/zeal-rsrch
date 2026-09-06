@@ -1,11 +1,21 @@
 import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
-const ROOT_ENV_PATH = fileURLToPath(new URL("../../../.env", import.meta.url));
+function findEnvironmentFile(): string | undefined {
+  const workingDirectory = process.cwd();
+  const candidates = [
+    resolve(workingDirectory, ".env"),
+    resolve(workingDirectory, "../.env"),
+    resolve(workingDirectory, "../../.env"),
+  ];
+
+  return candidates.find((candidate) => existsSync(candidate));
+}
 
 export function loadRootEnvironment(): void {
-  if (!process.env.DATABASE_URL && existsSync(ROOT_ENV_PATH)) {
-    process.loadEnvFile(ROOT_ENV_PATH);
+  const environmentFile = findEnvironmentFile();
+  if (!process.env.DATABASE_URL && environmentFile) {
+    process.loadEnvFile(environmentFile);
   }
 }
 

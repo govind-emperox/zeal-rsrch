@@ -561,6 +561,7 @@ code {
 
 .status-complete,
 .status-done,
+.status-active,
 .status-low {
   border-color: rgba(50, 150, 93, 0.35);
   background: rgba(50, 150, 93, 0.1);
@@ -569,6 +570,7 @@ code {
 
 .status-blocked,
 .status-failed,
+.status-archived,
 .status-high {
   border-color: rgba(243, 91, 4, 0.35);
   background: rgba(243, 91, 4, 0.1);
