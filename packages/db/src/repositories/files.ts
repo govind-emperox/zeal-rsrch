@@ -54,4 +54,14 @@ export class FileRepository {
       throw new RecordNotFoundError("File", id);
     }
   }
+
+  async rename(id: string, name: string): Promise<Artifact> {
+    const [row] = await this.db
+      .update(files)
+      .set({ name, updatedAt: new Date() })
+      .where(and(eq(files.id, id), isNull(files.deletedAt)))
+      .returning();
+    if (!row) throw new RecordNotFoundError("File", id);
+    return mapFile(row);
+  }
 }

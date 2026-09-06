@@ -12,15 +12,19 @@
     "infra:status": "docker compose ps",
     "db:shell": "docker compose exec postgres psql -U rsrch -d rsrch",
     "db:backup": "./scripts/backup-postgres.sh",
+    "db:restore": "./scripts/restore-postgres.sh",
     "db:generate": "pnpm --filter @zeal-rsrch/db db:generate",
     "db:migrate": "pnpm --filter @zeal-rsrch/db db:migrate",
     "db:seed:cur8r": "pnpm --filter @zeal-rsrch/db db:seed:cur8r",
     "db:verify-migrations": "pnpm --filter @zeal-rsrch/db db:verify-migrations",
     "dev:dashboard": "pnpm --filter @zeal-rsrch/dashboard dev",
+    "dev:worker": "pnpm --filter @zeal-rsrch/research-worker dev",
+    "start:worker": "pnpm --filter @zeal-rsrch/research-worker start",
     "build:dashboard": "pnpm --filter @zeal-rsrch/dashboard build",
     "lint": "pnpm --filter @zeal-rsrch/dashboard lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r --if-present test",
-    "check": "pnpm lint && pnpm typecheck && pnpm test"
+    "secrets:scan": "./scripts/scan-secrets.sh",
+    "check": "pnpm secrets:scan && pnpm lint && pnpm typecheck && pnpm test"
   }
 }

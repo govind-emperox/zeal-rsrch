@@ -1,27 +1,25 @@
-import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { ProjectTabs } from "@/components/project-tabs";
-import { StatusPill } from "@/components/status-pill";
-import { primaryProject, tasks } from "@/lib/mock-data";
+import { KanbanBoard } from "@/components/kanban-board";
+import { getRepositories } from "@/lib/server/database";
 
-const columns = [
-  { key: "backlog", title: "Backlog" },
-  { key: "researching", title: "Researching" },
-  { key: "drafting", title: "Drafting" },
-  { key: "review", title: "Review" },
-  { key: "done", title: "Done" },
-];
-
-export default function KanbanPage() {
+export default async function KanbanPage({ params }: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await params;
+  const repositories = getRepositories();
+  const [project, tasks] = await Promise.all([repositories.projects.get(projectId), repositories.tasks.listForProject(projectId)]);
+  if (!project) return <AppShell active="kanban"><p>Project not found.</p></AppShell>;
+  const cards = await Promise.all(tasks.map(async (task) => {
+    const [events, reports] = await Promise.all([repositories.events.listForTask(task.id, { limit: 1 }), repositories.reports.listForTask(task.id)]);
+    return { ...task, latestEvent: events[0]?.message ?? null, hasReport: reports.length > 0 };
+  }));
   return (
     <AppShell active="kanban">
       <div className="project-header">
         <div>
           <p className="eyebrow">Workflow board</p>
-          <h1>{primaryProject.title}</h1>
-          <p className="page-copy">
-            Research and editorial workflow for {primaryProject.channel} · {primaryProject.episode}.
-          </p>
+          <h1>{project.title}</h1>
+          <p className="page-copy">Research and editorial workflow for this project.</p>
         </div>
         <button className="primary-button">
           <Plus size={16} aria-hidden="true" />
@@ -29,13 +27,11 @@ export default function KanbanPage() {
         </button>
       </div>
 
-      <ProjectTabs active="kanban" />
+      <ProjectTabs active="kanban" projectId={projectId} />
 
       <section className="worker-strip" aria-label="Active worker context">
-        <StatusPill status="queued" label="ChatGPT connection not started" />
-        <span>Thread: not started</span>
-        <span>Current phase: shortlist review</span>
-        <span>Reference: content/channels/sci-fi-books-weekly/episodes/episode-03</span>
+        <span>Project status: {project.status}</span>
+        <span>{project.status === "archived" ? "Archived projects retain existing data and cannot receive new tasks." : "Task transitions are validated before they are saved."}</span>
       </section>
 
       <section className="panel board-toolbar" aria-label="Board controls">
@@ -44,61 +40,8 @@ export default function KanbanPage() {
           <span className="sr-only">Search tasks</span>
           <input placeholder="Search tasks" />
         </label>
-        <button className="secondary-button">
-          <Filter size={15} aria-hidden="true" />
-          Filter
-        </button>
-        <button className="secondary-button">
-          <SlidersHorizontal size={15} aria-hidden="true" />
-          Sort
-        </button>
       </section>
-
-      <section className="kanban-board" aria-label="Research workflow board">
-        {columns.map((column) => {
-          const columnTasks = tasks.filter((task) => task.status === column.key);
-          return (
-            <div className="kanban-column" key={column.key}>
-              <div className="column-header">
-                <h2>{column.title}</h2>
-                <span>{columnTasks.length}</span>
-              </div>
-              <div className="kanban-stack">
-                {columnTasks.map((task) => (
-                  <article className="task-card" key={task.id}>
-                    <div className="task-card-top">
-                      <code>{task.id}</code>
-                      <StatusPill status={task.priority} label={task.priority} />
-                    </div>
-                    <h3>{task.title}</h3>
-                    <p>{task.latest}</p>
-                    {task.blockedReason ? (
-                      <div className="blocked-reason">{task.blockedReason}</div>
-                    ) : null}
-                    <div className="progress-track">
-                      <span style={{ width: `${task.progress}%` }} />
-                    </div>
-                    <dl className="task-meta">
-                      <div>
-                        <dt>Updated</dt>
-                        <dd>{task.updated}</dd>
-                      </div>
-                      <div>
-                        <dt>Thread</dt>
-                        <dd>{task.thread}</dd>
-                      </div>
-                      <div>
-                        <dt>Report</dt>
-                        <dd>{task.report}</dd>
-                      </div>
-                    </dl>
-                  </article>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </section>
+      <KanbanBoard tasks={cards} />
     </AppShell>
   );
 }

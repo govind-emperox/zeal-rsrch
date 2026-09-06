@@ -53,6 +53,17 @@ export const UpdateTaskInputSchema = z
     "At least one task field must be changed",
   );
 
+export const TransitionTaskInputSchema = z.object({
+  status: TaskStatusSchema,
+  phase: TaskPhaseSchema.nullable().optional(),
+  blockedReason: z.string().trim().min(1).max(2_000).nullable().optional(),
+  version: z.number().int().nonnegative(),
+}).superRefine((value, context) => {
+  if (value.status === "blocked" && !value.blockedReason) {
+    context.addIssue({ code: "custom", path: ["blockedReason"], message: "A reason is required when blocking a task" });
+  }
+});
+
 export const TaskSchema = z.object({
   id: EntityIdSchema,
   projectId: EntityIdSchema,
@@ -77,4 +88,5 @@ export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
 export type TaskPhase = z.infer<typeof TaskPhaseSchema>;
 export type CreateTaskInput = z.infer<typeof CreateTaskInputSchema>;
 export type UpdateTaskInput = z.infer<typeof UpdateTaskInputSchema>;
+export type TransitionTaskInput = z.infer<typeof TransitionTaskInputSchema>;
 export type Task = z.infer<typeof TaskSchema>;

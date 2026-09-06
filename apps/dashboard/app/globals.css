@@ -480,6 +480,56 @@ h4 {
   padding: 10px;
 }
 
+button.file-row {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.artifact-preview {
+  min-height: 220px;
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--platinum);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  margin: 12px 0;
+  padding: 14px;
+  color: var(--ink);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.artifact-actions,
+.task-transition {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.artifact-actions {
+  margin-top: 12px;
+}
+
+.task-transition {
+  justify-content: space-between;
+  color: var(--muted-ink);
+  font-size: 12px;
+}
+
+.task-transition select,
+.toolbar-cluster select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 30px;
+  padding: 0 7px;
+}
+
 .event-row {
   grid-template-columns: 58px minmax(0, 1fr) auto;
 }
