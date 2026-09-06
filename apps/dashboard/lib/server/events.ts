@@ -8,7 +8,7 @@ export type EventStore = {
 
 export function eventStream(events: readonly RunEvent[]): Response {
   const payload = events.map((event) => `id: ${event.id}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`).join("");
-  return new Response(payload || ": connected\n\n", {
+  return new Response(`retry: 2000\n\n${payload || ": connected\n\n"}`, {
     headers: {
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",

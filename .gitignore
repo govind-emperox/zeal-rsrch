@@ -23,6 +23,7 @@ test-results/
 # Local runtime data and backups
 data/
 backups/
+.rsrch-storage/
 
 # Logs and TypeScript build state
 npm-debug.log*

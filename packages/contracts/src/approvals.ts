@@ -24,6 +24,7 @@ export const ApprovalRequestSchema = z.object({
   status: ApprovalStatusSchema,
   reason: z.string().max(2_000).nullable(),
   actionSummary: z.string().min(1).max(4_000),
+  decision: z.enum(["accept", "accept_for_session", "decline", "cancel"]).nullable().optional(),
   requestedAt: IsoDateTimeSchema,
   resolvedAt: IsoDateTimeSchema.nullable(),
 });

@@ -16,6 +16,7 @@ const mapApproval = (row: typeof approvalRequests.$inferSelect): ApprovalRequest
     status: row.status as ApprovalRequest["status"],
   reason: row.reason,
   actionSummary: row.actionSummary,
+  decision: row.decision as ApprovalRequest["decision"],
   requestedAt: row.requestedAt.toISOString(),
   resolvedAt: row.resolvedAt?.toISOString() ?? null,
 });
@@ -50,6 +51,11 @@ export class ApprovalRepository {
       .where(and(eq(approvalRequests.taskId, taskId), eq(approvalRequests.status, "pending")))
       .orderBy(asc(approvalRequests.requestedAt));
     return rows.map(mapApproval);
+  }
+
+  async get(id: string): Promise<ApprovalRequest | null> {
+    const [row] = await this.db.select().from(approvalRequests).where(eq(approvalRequests.id, id)).limit(1);
+    return row ? mapApproval(row) : null;
   }
 
   async resolve(id: string, decision: ResolveApprovalInput["decision"]): Promise<ApprovalRequest> {

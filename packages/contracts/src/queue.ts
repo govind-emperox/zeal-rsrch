@@ -8,11 +8,11 @@ const QueueEnvelopeSchema = z.object({
 });
 
 export const ResearchRunPayloadSchema = QueueEnvelopeSchema.extend({
-  promptVersionId: EntityIdSchema,
-  skillVersionId: EntityIdSchema,
+  promptVersionId: EntityIdSchema.nullable(),
+  skillVersionId: EntityIdSchema.nullable(),
 });
 
-export const ResearchResumePayloadSchema = QueueEnvelopeSchema.extend({
+export const ResearchResumePayloadSchema = ResearchRunPayloadSchema.extend({
   codexThreadId: z.string().min(1).max(255),
 });
 

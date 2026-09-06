@@ -575,6 +575,21 @@ code {
   color: #145d34;
 }
 
+.approval-callout {
+  justify-content: space-between;
+}
+
+.approval-callout p,
+.approval-callout small {
+  display: block;
+  margin-top: 4px;
+}
+
+.empty-copy {
+  color: var(--slate-neutral);
+  font-size: 13px;
+}
+
 .status-pill {
   display: inline-flex;
   align-items: center;

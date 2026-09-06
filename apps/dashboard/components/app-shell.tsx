@@ -11,29 +11,8 @@ import {
   Search,
   Settings2,
 } from "lucide-react";
-import { primaryProject, projects } from "@/lib/mock-data";
+import { primaryProject, projects as mockProjects } from "@/lib/mock-data";
 import { StatusPill } from "@/components/status-pill";
-
-const navItems = [
-  { label: "Overview", href: "/", Icon: Home },
-  { label: "Project Activity", href: "/", Icon: History },
-  { label: "Projects", href: "/", Icon: FolderArchive },
-  {
-    label: "Artifacts",
-    href: `/projects/${primaryProject.id}/files`,
-    Icon: FileText,
-  },
-  {
-    label: "Research Sources",
-    href: `/projects/${primaryProject.id}/files`,
-    Icon: Database,
-  },
-  {
-    label: "Editorial Workflow",
-    href: `/projects/${primaryProject.id}/kanban`,
-    Icon: ListChecks,
-  },
-];
 
 type AppShellProps = {
   active: "dashboard" | "chat" | "kanban" | "files";
@@ -45,9 +24,17 @@ type AppShellProps = {
 export function AppShell({
   active,
   children,
-  projects: projectItems = projects,
+  projects: projectItems = mockProjects,
   primaryProjectId = primaryProject.id,
 }: AppShellProps) {
+  const navItems = [
+    { label: "Overview", href: "/", Icon: Home },
+    { label: "Project Activity", href: "/", Icon: History },
+    { label: "Projects", href: "/", Icon: FolderArchive },
+    { label: "Artifacts", href: `/projects/${primaryProjectId}/files`, Icon: FileText },
+    { label: "Research Sources", href: `/projects/${primaryProjectId}/files`, Icon: Database },
+    { label: "Editorial Workflow", href: `/projects/${primaryProjectId}/kanban`, Icon: ListChecks },
+  ];
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -64,7 +51,8 @@ export function AppShell({
             <Link
               className={
                 (active === "dashboard" && label === "Overview") ||
-                (active === "files" && label === "Reports Vault")
+                (active === "files" && label === "Artifacts") ||
+                (active === "kanban" && label === "Editorial Workflow")
                   ? "nav-link active"
                   : "nav-link"
               }

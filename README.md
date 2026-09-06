@@ -67,11 +67,11 @@ packages/
   domain/           Lifecycle, retry, retention, key, and prompt rules
   db/               Drizzle schema, SQL migrations, and repositories
 services/
-  worker/           Future long-running Codex research worker
+  research-worker/  Long-running Codex app-server research worker
 prd/                Product requirements and design wireframes
 ```
 
-The dashboard project list is backed by PostgreSQL; task, activity, and artifact views still use reference data until their Release 1 endpoints are implemented. The Codex worker and storage adapter follow in the next slices described by the PRD.
+The dashboard project, task, activity, approval, and artifact views are backed by PostgreSQL. The research worker executes tasks through the local Codex app-server and persists reports, source manifests, and cleanup audits to local artifact storage.
 
 ## Development
 

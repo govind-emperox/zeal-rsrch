@@ -28,8 +28,9 @@ export type TaskStore = {
 };
 
 export type RunStore = {
-  create(input: { taskId: string }): Promise<ResearchRun>;
+  create(input: { taskId: string; promptVersionId?: string | null; skillVersionId?: string | null }): Promise<ResearchRun>;
   update(id: string, input: { jobId: string }): Promise<ResearchRun>;
+  listForTask?(taskId: string): Promise<ResearchRun[]>;
 };
 
 function errorResponse(status: number, code: string, message: string): Response {
@@ -109,18 +110,56 @@ export async function enqueueResearch(taskId: string, store: TaskStore, runs: Ru
     const task = await store.get(taskId);
     if (!task) throw new RecordNotFoundError("Task", taskId);
     if (task.status === "archived") throw new ArchivedProjectError(task.projectId);
-    const run = await runs.create({ taskId });
+    if (!["backlog", "queued", "blocked", "failed", "cancelled"].includes(task.status)) {
+      return errorResponse(409, "research_already_active", "Research can only start from a queued, blocked, failed, or cancelled task");
+    }
+    const queued = task.status === "queued" ? task : await store.transition(taskId, {
+      expectedVersion: task.version,
+      status: "queued",
+      phase: "queued",
+      blockedReason: null,
+      eventType: "task_queued",
+      eventMessage: task.codexThreadId ? "Research resume queued" : "Research run queued",
+    });
+    const run = await runs.create({
+      taskId,
+      promptVersionId: queued.promptVersionId,
+      skillVersionId: queued.skillVersionId,
+    });
     const idempotencyKey = randomUUID();
-    const jobId = await boss.send("research.run", {
+    const queue = queued.codexThreadId ? "research.resume" : "research.run";
+    const jobId = await boss.send(queue, {
       taskId: task.id,
       runId: run.id,
       idempotencyKey,
-      promptVersionId: task.promptVersionId ?? task.id,
-      skillVersionId: task.skillVersionId ?? task.id,
+      promptVersionId: queued.promptVersionId,
+      skillVersionId: queued.skillVersionId,
+      ...(queued.codexThreadId ? { codexThreadId: queued.codexThreadId } : {}),
     }, { singletonKey: idempotencyKey });
-    if (!jobId) throw new Error("Unable to enqueue research.run");
+    if (!jobId) throw new Error(`Unable to enqueue ${queue}`);
     const updatedRun = await runs.update(run.id, { jobId });
     return Response.json({ data: updatedRun }, { status: 202 });
+  } catch (error) {
+    return handledError(error);
+  }
+}
+
+export async function cancelResearch(taskId: string, store: TaskStore, runs: RunStore, boss: PgBoss): Promise<Response> {
+  try {
+    const task = await store.get(taskId);
+    if (!task) throw new RecordNotFoundError("Task", taskId);
+    if (!runs.listForTask) throw new Error("Run listing is unavailable");
+    const run = (await runs.listForTask(taskId)).find((candidate) => ["queued", "running", "blocked"].includes(candidate.status));
+    if (!run) return errorResponse(409, "research_not_active", "This task has no active research run");
+    const idempotencyKey = randomUUID();
+    const jobId = await boss.send("research.cancel", {
+      taskId,
+      runId: run.id,
+      idempotencyKey,
+      requestedBy: "operator",
+    }, { singletonKey: idempotencyKey });
+    if (!jobId) throw new Error("Unable to enqueue research.cancel");
+    return Response.json({ data: { taskId, runId: run.id, jobId } }, { status: 202 });
   } catch (error) {
     return handledError(error);
   }

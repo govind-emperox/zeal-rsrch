@@ -22,22 +22,23 @@ function subject(overrides: { run?: () => Promise<unknown>; list?: () => Promise
       runs: { get: async () => ({ status: "queued", taskId: ids.taskId, attempt: 0 }), update: async (_id, input) => { updates.push(input); } },
       tasks: { get: async () => ({ projectId: ids.projectId, status: "queued", version: 2 }), transition: async () => {} },
       events: { append: async (input) => { events.push(input); } },
+      files: { create: async () => ({ id: ids.runId }) },
       cleanupAudits: { create: async (input) => { audits.push(input); } },
     },
     { run: async () => overrides.run?.() as { codexThreadId?: string }, resume: async () => ({}), cancel: async () => {} },
-    { list: async () => overrides.list?.() ?? [], cleanupTemporary: async () => ({ deleted: ["tmp/x/a"], retained: [], failed: [] }) } as never,
+    { put: async (storageKey: string) => ({ storageKey, contentHash: "a".repeat(64), sizeBytes: 1, contentType: "application/json" }), list: async () => overrides.list?.() ?? [], cleanupTemporary: async () => ({ deleted: ["tmp/x/a"], retained: [], failed: [] }) } as never,
   );
   return { worker, updates, events, audits };
 }
 
 describe("ResearchWorker", () => {
   it("records a retryable executor failure without raw error content", async () => {
-    const { worker, updates, events } = subject({ run: async () => { throw Object.assign(new Error("token=super-secret"), { code: "network_error" }); } });
+    const { worker, updates, events } = subject({ run: async () => { throw Object.assign(new Error("token=super-secret"), { code: "codex_unavailable" }); } });
     const payload = { ...ids, idempotencyKey: "a".repeat(16), promptVersionId: ids.taskId, skillVersionId: ids.runId };
 
-    await expect((worker as unknown as WorkerInternals).run("research.run", payload)).rejects.toMatchObject({ code: "network_error" });
-    expect(updates).toContainEqual(expect.objectContaining({ status: "failed", terminalCode: "network_error" }));
-    expect(events).toEqual([expect.objectContaining({ message: "Research execution failed: network_error", metadata: { retryable: false } })]);
+    await expect((worker as unknown as WorkerInternals).run("research.run", payload)).rejects.toMatchObject({ code: "codex_unavailable" });
+    expect(updates).toContainEqual(expect.objectContaining({ status: "failed", terminalCode: "codex_unavailable" }));
+    expect(events).toEqual([expect.objectContaining({ message: "Research execution failed: codex_unavailable", metadata: { retryable: true } })]);
     expect(JSON.stringify(events)).not.toContain("super-secret");
   });
 

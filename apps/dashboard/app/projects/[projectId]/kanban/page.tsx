@@ -3,18 +3,19 @@ import { AppShell } from "@/components/app-shell";
 import { ProjectTabs } from "@/components/project-tabs";
 import { KanbanBoard } from "@/components/kanban-board";
 import { getRepositories } from "@/lib/server/database";
+import { listDashboardProjects } from "@/lib/server/projects";
 
 export default async function KanbanPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
   const repositories = getRepositories();
-  const [project, tasks] = await Promise.all([repositories.projects.get(projectId), repositories.tasks.listForProject(projectId)]);
-  if (!project) return <AppShell active="kanban"><p>Project not found.</p></AppShell>;
+  const [project, tasks, projects] = await Promise.all([repositories.projects.get(projectId), repositories.tasks.listForProject(projectId), listDashboardProjects()]);
+  if (!project) return <AppShell active="kanban" projects={projects}><p>Project not found.</p></AppShell>;
   const cards = await Promise.all(tasks.map(async (task) => {
     const [events, reports] = await Promise.all([repositories.events.listForTask(task.id, { limit: 1 }), repositories.reports.listForTask(task.id)]);
     return { ...task, latestEvent: events[0]?.message ?? null, hasReport: reports.length > 0 };
   }));
   return (
-    <AppShell active="kanban">
+    <AppShell active="kanban" projects={projects} primaryProjectId={projectId}>
       <div className="project-header">
         <div>
           <p className="eyebrow">Workflow board</p>

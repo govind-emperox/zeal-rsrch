@@ -60,9 +60,11 @@ The restore command requires the literal confirmation `RESTORE` and replaces exi
 
 The worker creates and consumes `research.run`, `research.resume`, `research.cancel`, and `retention.cleanup` queues. Stop it cleanly with `SIGINT` or `SIGTERM`; it aborts in-flight executor work and asks pg-boss to stop gracefully.
 
-The current worker intentionally has no Codex app-server executor configured. Submitted research jobs therefore fail with `codex_unavailable` until an executor is implemented and configured. Do not treat worker process startup as evidence that research can execute.
+The worker starts `codex app-server --stdio`, initializes the JSONL protocol, starts or resumes the task's persisted Codex thread, and starts a structured research turn with `$research-journalist`. `CODEX_COMMAND`, `CODEX_MODEL`, `CODEX_EFFORT`, and `CODEX_WORKSPACE_ROOT` are optional overrides; the authenticated Codex account defaults are used when model and command overrides are absent.
 
-Approval records are persisted, but this slice does not connect them to a live Codex app-server approval protocol. Review pending approval records in the dashboard/database before any future executor resumes work; preserve the approval reason, action summary, and decision as the audit trail.
+Command, file-change, network, and permission requests from app-server are persisted and place the task in `blocked`. Approve or decline them from the project chat screen. The worker keeps the app-server connection open, observes the decision, responds to the original server request, and resumes the task. Cancelling a live task sends `turn/interrupt` and preserves the interrupted run history.
+
+Successful turns persist the user and assistant transcript, normalized source records, a Markdown report, a JSON source manifest, and a cleanup audit. The task then moves to `review`; mark it done from the Kanban board after editorial review.
 
 ## Recovery
 
@@ -82,9 +84,10 @@ Run cleanup only after confirming reports and manifests are persisted. Investiga
 
 Run `pnpm check` before release. It scans tracked application content for likely committed credentials, then runs lint, type checks, and unit/integration tests. The scanner is defense in depth, not a replacement for secret management or pre-receive scanning.
 
-Known Slice 7 limits:
+Known Release 1 limits:
 
-- No Codex app-server executor or live approval bridge exists.
 - No process supervisor, worker heartbeat writer, authentication, multi-user authorization, encryption-at-rest, or remote object storage is provided.
+- Approval state is coordinated through PostgreSQL polling and requires the original worker process to remain alive while a request is pending.
+- MCP form elicitations and free-form `request_user_input` prompts are declined/empty in Release 1; command, file, network, and permission approvals are supported.
 - Artifact backups require a separate storage-directory backup; `pnpm db:backup` is database-only.
 - No browser end-to-end suite is installed; critical server behavior is covered with unit tests and PostgreSQL integration tests when local infrastructure is available.
