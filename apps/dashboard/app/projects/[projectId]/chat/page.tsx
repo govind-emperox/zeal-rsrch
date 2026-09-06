@@ -35,7 +35,7 @@ export default function ProjectChatPage() {
         </div>
       </div>
 
-      <ProjectTabs active="chat" />
+      <ProjectTabs active="chat" projectId={primaryProject.id} />
 
       <section className="chat-grid" aria-label="Project chat execution">
         <aside className="panel task-rail" aria-labelledby="task-selector">

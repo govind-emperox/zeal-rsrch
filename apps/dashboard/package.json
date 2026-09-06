@@ -13,10 +13,14 @@
   "dependencies": {
     "@zeal-rsrch/contracts": "workspace:*",
     "@zeal-rsrch/db": "workspace:*",
+    "@zeal-rsrch/domain": "workspace:*",
+    "@zeal-rsrch/storage": "workspace:*",
     "lucide-react": "1.41.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "pg-boss": "12.14.0",
+    "server-only": "0.0.1",
     "zod": "4.5.4"
   },
   "devDependencies": {
