@@ -2,7 +2,7 @@ import { Filter, Plus, Search, SlidersHorizontal } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { ProjectTabs } from "@/components/project-tabs";
 import { StatusPill } from "@/components/status-pill";
-import { tasks } from "@/lib/mock-data";
+import { primaryProject, tasks } from "@/lib/mock-data";
 
 const columns = [
   { key: "backlog", title: "Backlog" },
@@ -18,8 +18,10 @@ export default function KanbanPage() {
       <div className="project-header">
         <div>
           <p className="eyebrow">Workflow board</p>
-          <h1>Q3 AI procurement market map</h1>
-          <p className="page-copy">Manual research workflow states for active Codex-backed tasks.</p>
+          <h1>{primaryProject.title}</h1>
+          <p className="page-copy">
+            Research and editorial workflow for {primaryProject.channel} · {primaryProject.episode}.
+          </p>
         </div>
         <button className="primary-button">
           <Plus size={16} aria-hidden="true" />
@@ -30,10 +32,10 @@ export default function KanbanPage() {
       <ProjectTabs active="kanban" />
 
       <section className="worker-strip" aria-label="Active worker context">
-        <StatusPill status="running" label="Codex worker active" />
-        <span>Thread rsrch_market_0918</span>
-        <span>Current phase: writing</span>
-        <span>Storage target: zeal-rsrch/projects/market-map-q3</span>
+        <StatusPill status="queued" label="ChatGPT connection not started" />
+        <span>Thread: not started</span>
+        <span>Current phase: shortlist review</span>
+        <span>Reference: content/channels/sci-fi-books-weekly/episodes/episode-03</span>
       </section>
 
       <section className="panel board-toolbar" aria-label="Board controls">

@@ -2,17 +2,17 @@ import Link from "next/link";
 import { Activity, CircleAlert, FileCheck2, FolderPlus, Search } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { StatusPill } from "@/components/status-pill";
-import { environmentHealth, projects, telemetry } from "@/lib/mock-data";
+import { channels, environmentHealth, projects, telemetry } from "@/lib/mock-data";
 
 export default function DashboardPage() {
   return (
     <AppShell active="dashboard">
       <div className="page-header">
         <div>
-          <p className="eyebrow">Control plane</p>
-          <h1>Research projects</h1>
+          <p className="eyebrow">Cur8r research workspace</p>
+          <h1>Content research projects</h1>
           <p className="page-copy">
-            Active local Codex-backed research work, source trails, reports, and cleanup state.
+            Research and editorial work for Cur8r&apos;s podcast channels.
           </p>
         </div>
         <button className="primary-button">
@@ -23,24 +23,24 @@ export default function DashboardPage() {
 
       <section className="summary-grid" aria-label="Workspace summary">
         <article className="metric-card">
-          <span>Active projects</span>
-          <strong>4</strong>
-          <small>1 queued, 1 blocked</small>
+          <span>Channels</span>
+          <strong>3</strong>
+          <small>1 publishing, 2 in production</small>
         </article>
         <article className="metric-card">
-          <span>Running tasks</span>
+          <span>Active episodes</span>
+          <strong>1</strong>
+          <small>Sci-Fi Books Weekly · Episode 03</small>
+        </article>
+        <article className="metric-card">
+          <span>Research candidates</span>
+          <strong>34</strong>
+          <small>September 1–30 releases</small>
+        </article>
+        <article className="metric-card">
+          <span>Shortlisted titles</span>
           <strong>6</strong>
-          <small>2 Codex threads live</small>
-        </article>
-        <article className="metric-card">
-          <span>Blocked tasks</span>
-          <strong>2</strong>
-          <small>Operator action needed</small>
-        </article>
-        <article className="metric-card">
-          <span>Completed reports</span>
-          <strong>12</strong>
-          <small>4 this week</small>
+          <small>Work in progress</small>
         </article>
       </section>
 
@@ -48,8 +48,8 @@ export default function DashboardPage() {
         <section className="panel project-panel" aria-labelledby="active-projects">
           <div className="panel-toolbar">
             <div>
-              <h2 id="active-projects">Active projects</h2>
-              <p>Open a project to continue chat execution, board work, or reports.</p>
+              <h2 id="active-projects">Active research project</h2>
+              <p>Open the September episode to review its brief, workflow, and source files.</p>
             </div>
             <label className="inline-search">
               <Search size={15} aria-hidden="true" />
@@ -84,7 +84,7 @@ export default function DashboardPage() {
                     <td>{project.tasks}</td>
                     <td>{project.report}</td>
                     <td>
-                      <Link className="row-action" href="/projects/market-map-q3/chat">
+                      <Link className="row-action" href={`/projects/${project.id}/chat`}>
                         Open
                       </Link>
                     </td>
@@ -98,8 +98,8 @@ export default function DashboardPage() {
         <aside className="side-stack">
           <section className="panel" aria-labelledby="telemetry-stream">
             <div className="panel-title-row">
-              <h2 id="telemetry-stream">Run stream</h2>
-              <StatusPill status="running" label="Live" />
+              <h2 id="telemetry-stream">Project activity</h2>
+              <StatusPill status="review" label="Reference data" />
             </div>
             <div className="event-list">
               {telemetry.map((event) => (
@@ -131,11 +131,29 @@ export default function DashboardPage() {
             </div>
             <div className="callout warning">
               <CircleAlert size={16} aria-hidden="true" />
-              <span>One support eval task is waiting for source approval.</span>
+              <span>Connect ChatGPT before starting the project&apos;s first in-app research run.</span>
             </div>
             <div className="callout success">
               <FileCheck2 size={16} aria-hidden="true" />
-              <span>Latest cleanup audit passed for filing-review.</span>
+              <span>34 candidates and the six-title WIP shortlist are loaded as reference data.</span>
+            </div>
+          </section>
+
+          <section className="panel" aria-labelledby="cur8r-channels">
+            <div className="panel-title-row">
+              <h2 id="cur8r-channels">Cur8r channels</h2>
+              <StatusPill status="complete" label="3 channels" />
+            </div>
+            <div className="source-list">
+              {channels.map((channel) => (
+                <article className="source-item" key={channel.id}>
+                  <strong>{channel.title}</strong>
+                  <span>{channel.description}</span>
+                  <small>
+                    {channel.cadence} / {channel.statusLabel}
+                  </small>
+                </article>
+              ))}
             </div>
           </section>
         </aside>

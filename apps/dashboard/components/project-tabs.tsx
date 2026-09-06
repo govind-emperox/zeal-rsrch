@@ -1,23 +1,24 @@
 import Link from "next/link";
 import { Files, LayoutDashboard, MessageSquareText } from "lucide-react";
+import { primaryProject } from "@/lib/mock-data";
 
 const tabs = [
   {
     key: "chat",
     label: "Chat / Execution",
-    href: "/projects/market-map-q3/chat",
+    href: `/projects/${primaryProject.id}/chat`,
     Icon: MessageSquareText,
   },
   {
     key: "kanban",
     label: "Kanban Board",
-    href: "/projects/market-map-q3/kanban",
+    href: `/projects/${primaryProject.id}/kanban`,
     Icon: LayoutDashboard,
   },
   {
     key: "files",
     label: "Artifacts & Reports",
-    href: "/projects/market-map-q3/files",
+    href: `/projects/${primaryProject.id}/files`,
     Icon: Files,
   },
 ];

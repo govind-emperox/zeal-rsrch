@@ -1,8 +1,8 @@
-import { CheckCircle2, FileText, Play, Save, Send, ShieldCheck } from "lucide-react";
+import { FileText, Play, Save, Send, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { ProjectTabs } from "@/components/project-tabs";
 import { StatusPill } from "@/components/status-pill";
-import { sources, tasks, transcript } from "@/lib/mock-data";
+import { primaryProject, sources, tasks, transcript } from "@/lib/mock-data";
 
 const phases = [
   "queued",
@@ -21,11 +21,13 @@ export default function ProjectChatPage() {
       <div className="project-header">
         <div>
           <p className="eyebrow">Project</p>
-          <h1>Q3 AI procurement market map</h1>
-          <p className="page-copy">Codex worker active through $research-journalist.</p>
+          <h1>{primaryProject.title}</h1>
+          <p className="page-copy">
+            {primaryProject.channel} · {primaryProject.episode} research workspace.
+          </p>
         </div>
         <div className="header-actions">
-          <StatusPill status="running" label="Worker running" />
+          <StatusPill status="queued" label="Connection not started" />
           <button className="secondary-button">
             <Save size={16} aria-hidden="true" />
             Save final report
@@ -58,7 +60,7 @@ export default function ProjectChatPage() {
           <div className="panel-toolbar">
             <div>
               <h2 id="transcript">Execution transcript</h2>
-              <p>Thread rsrch_market_0918</p>
+              <p>ChatGPT research run not started</p>
             </div>
             <button className="primary-button">
               <Play size={15} aria-hidden="true" />
@@ -76,11 +78,11 @@ export default function ProjectChatPage() {
           </div>
 
           <div className="composer">
-            <div className="prompt-prefix">$research-journalist</div>
+            <div className="prompt-prefix">ChatGPT research brief</div>
             <textarea
               aria-label="Research prompt"
-              placeholder="Ask Codex to continue this project..."
-              defaultValue="Compare vendors by evidence strength, implementation risk, and source quality."
+              placeholder="Ask ChatGPT to research this project..."
+              defaultValue="Research new and upcoming adult science-fiction books releasing in September 2026. Compare the results with the existing Cur8r research and WIP shortlist."
             />
             <button className="icon-button send-button" aria-label="Send prompt">
               <Send size={17} />
@@ -91,17 +93,15 @@ export default function ProjectChatPage() {
         <aside className="side-stack">
           <section className="panel" aria-labelledby="status-panel">
             <div className="panel-title-row">
-              <h2 id="status-panel">Codex phases</h2>
-              <StatusPill status="running" label="Writing" />
+              <h2 id="status-panel">Research phases</h2>
+              <StatusPill status="queued" label="Queued" />
             </div>
             <div className="phase-list">
               {phases.map((phase, index) => (
                 <div className="phase-row" key={phase}>
-                  <span className={index < 4 ? "phase-check done" : "phase-check"}>
-                    {index < 4 ? <CheckCircle2 size={14} /> : index + 1}
-                  </span>
+                  <span className="phase-check">{index + 1}</span>
                   <span>{phase}</span>
-                  {phase === "writing" ? <StatusPill status="running" /> : null}
+                  {phase === "queued" ? <StatusPill status="queued" /> : null}
                 </div>
               ))}
             </div>
@@ -133,15 +133,15 @@ export default function ProjectChatPage() {
             <div className="audit-stack">
               <div>
                 <span>Retained</span>
-                <strong>3 reports, 1 manifest</strong>
+                <strong>2 research files, 1 shortlist</strong>
               </div>
               <div>
-                <span>Temporary scrape</span>
-                <strong>cleanup pending</strong>
+                <span>Working artifact</span>
+                <strong>shortlist needs review</strong>
               </div>
               <div>
-                <span>Raw source bodies</span>
-                <strong>not persisted</strong>
+                <span>Research run</span>
+                <strong>not started</strong>
               </div>
             </div>
           </section>

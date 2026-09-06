@@ -11,16 +11,28 @@ import {
   Search,
   Settings2,
 } from "lucide-react";
-import { projects } from "@/lib/mock-data";
+import { primaryProject, projects } from "@/lib/mock-data";
 import { StatusPill } from "@/components/status-pill";
 
 const navItems = [
   { label: "Overview", href: "/", Icon: Home },
-  { label: "Run Stream", href: "/", Icon: History },
+  { label: "Project Activity", href: "/", Icon: History },
   { label: "Projects", href: "/", Icon: FolderArchive },
-  { label: "Reports Vault", href: "/projects/market-map-q3/files", Icon: FileText },
-  { label: "Sources Manifest", href: "/projects/market-map-q3/files", Icon: Database },
-  { label: "Audit Log", href: "/projects/market-map-q3/files", Icon: ListChecks },
+  {
+    label: "Artifacts",
+    href: `/projects/${primaryProject.id}/files`,
+    Icon: FileText,
+  },
+  {
+    label: "Research Sources",
+    href: `/projects/${primaryProject.id}/files`,
+    Icon: Database,
+  },
+  {
+    label: "Editorial Workflow",
+    href: `/projects/${primaryProject.id}/kanban`,
+    Icon: ListChecks,
+  },
 ];
 
 type AppShellProps = {
@@ -35,8 +47,8 @@ export function AppShell({ active, children }: AppShellProps) {
         <Link className="brand" href="/">
           <span className="brand-mark">R</span>
           <span>
-            <strong>RSRCH Pilot</strong>
-            <small>Local research ops</small>
+            <strong>Cur8r Research</strong>
+            <small>Podcast content workspace</small>
           </span>
         </Link>
 
@@ -65,8 +77,8 @@ export function AppShell({ active, children }: AppShellProps) {
           <div className="project-list">
             {projects.slice(0, 4).map((project) => (
               <Link
-                className={project.id === "market-map-q3" ? "project-link active" : "project-link"}
-                href="/projects/market-map-q3/chat"
+                className={project.id === primaryProject.id ? "project-link active" : "project-link"}
+                href={`/projects/${project.id}/chat`}
                 key={project.id}
               >
                 <span className="project-link-title">{project.title}</span>

@@ -2,9 +2,7 @@ import { Download, FileJson, FileText, Folder, Grid2X2, List, MoreHorizontal, Se
 import { AppShell } from "@/components/app-shell";
 import { ProjectTabs } from "@/components/project-tabs";
 import { StatusPill } from "@/components/status-pill";
-import { files } from "@/lib/mock-data";
-
-const folders = ["reports", "manifests", "audits", "uploads", "tmp"];
+import { files, folders, primaryProject } from "@/lib/mock-data";
 
 export default function FilesPage() {
   const selected = files[0];
@@ -14,8 +12,10 @@ export default function FilesPage() {
       <div className="project-header">
         <div>
           <p className="eyebrow">Artifacts browser</p>
-          <h1>Q3 AI procurement market map</h1>
-          <p className="page-copy">Reports, source manifests, cleanup audits, uploads, and previews.</p>
+          <h1>{primaryProject.title}</h1>
+          <p className="page-copy">
+            Existing Cur8r research and editorial reference files for {primaryProject.episode}.
+          </p>
         </div>
         <button className="secondary-button">
           <Download size={16} aria-hidden="true" />
@@ -27,24 +27,24 @@ export default function FilesPage() {
 
       <section className="summary-grid file-summary" aria-label="Artifact categories">
         <article className="metric-card">
-          <span>Final reports</span>
-          <strong>3</strong>
-          <small>Retained</small>
-        </article>
-        <article className="metric-card">
-          <span>Source manifests</span>
-          <strong>5</strong>
-          <small>Metadata only</small>
-        </article>
-        <article className="metric-card">
-          <span>Cleanup audits</span>
-          <strong>4</strong>
-          <small>1 pending</small>
-        </article>
-        <article className="metric-card">
-          <span>Uploaded papers</span>
+          <span>Research files</span>
           <strong>2</strong>
-          <small>User retained</small>
+          <small>Markdown and CSV</small>
+        </article>
+        <article className="metric-card">
+          <span>Shortlist files</span>
+          <strong>1</strong>
+          <small>Work in progress</small>
+        </article>
+        <article className="metric-card">
+          <span>Research candidates</span>
+          <strong>34</strong>
+          <small>Adult science fiction</small>
+        </article>
+        <article className="metric-card">
+          <span>Shortlisted titles</span>
+          <strong>6</strong>
+          <small>Editorial review pending</small>
         </article>
       </section>
 
@@ -65,7 +65,7 @@ export default function FilesPage() {
           <div className="panel-toolbar">
             <div>
               <h2 id="file-list">Project artifacts</h2>
-              <p>Local object storage view for retained project outputs.</p>
+              <p>Local reference artifacts from the current Cur8r episode workspace.</p>
             </div>
             <div className="toolbar-cluster">
               <label className="inline-search">
@@ -94,7 +94,10 @@ export default function FilesPage() {
                 </div>
                 <span>{file.size}</span>
                 <span>{file.created}</span>
-                <StatusPill status={file.cleanup === "Passed" ? "complete" : "running"} label={file.cleanup} />
+                <StatusPill
+                  status={file.state === "Retained" ? "complete" : "review"}
+                  label={file.state}
+                />
                 <button className="icon-button" aria-label={`More actions for ${file.name}`}>
                   <MoreHorizontal size={16} />
                 </button>
@@ -109,16 +112,16 @@ export default function FilesPage() {
             <StatusPill status="complete" label="Retained" />
           </div>
           <div className="markdown-preview">
-            <h3>Q3 AI procurement market map</h3>
+            <h3>Science Fiction Books — September 2026</h3>
             <p>
-              This report groups procurement AI tools by buying motion, deployment model, evidence
-              quality, and implementation risk.
+              Adult science fiction released September 1–30, 2026: novels, novellas,
+              single-author collections, and anthologies.
             </p>
-            <h4>Current findings</h4>
+            <h4>Current reference set</h4>
             <ul>
-              <li>Security review claims require source-level verification.</li>
-              <li>Procurement workflow depth varies materially by vendor segment.</li>
-              <li>Temporary scrape output is excluded from retained source records.</li>
+              <li>34 candidate releases are documented.</li>
+              <li>Six titles are in the working shortlist.</li>
+              <li>YA, middle grade, graphic novels, and nonfiction are excluded.</li>
             </ul>
           </div>
 
@@ -136,8 +139,8 @@ export default function FilesPage() {
               <dd>{selected.retention}</dd>
             </div>
             <div>
-              <dt>Cleanup status</dt>
-              <dd>{selected.cleanup}</dd>
+              <dt>File status</dt>
+              <dd>{selected.state}</dd>
             </div>
           </dl>
         </aside>
