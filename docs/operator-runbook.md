@@ -7,7 +7,7 @@ RSRCH Pilot is a local, single-operator service. PostgreSQL stores application s
 Install Node.js 22.12 or newer, pnpm 11.1.3, Docker with Compose, and the Codex CLI when research execution is required. Create a root `.env` file that is not committed:
 
 ```sh
-POSTGRES_PASSWORD=use-a-long-unique-local-password
+POSTGRES_PASSWORD should be set to a long, unique local password.
 DATABASE_URL=postgresql://rsrch:use-a-long-unique-local-password@127.0.0.1:54320/rsrch
 STORAGE_ROOT=/absolute/path/outside/the/repository/rsrch-storage
 ```
